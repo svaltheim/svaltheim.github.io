@@ -1,1 +1,4 @@
-
+baseURL = 'https://github.io'
+languageCode = 'es-es'
+title = 'Mi Blog con Hugo'
+theme = 'ananke' # Este es un tema clásico por defecto
