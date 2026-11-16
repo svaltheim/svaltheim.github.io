@@ -1,4 +1,5 @@
 import { defineConfig, passthroughImageService } from 'astro/config';
+import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import solidJs from "@astrojs/solid-js";
@@ -11,8 +12,9 @@ import { SITE_METADATA } from "./src/consts.ts";
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://svaltheim.github.io',
+  base: '/', // Obligatorio para estructurar correctamente los enlaces en GitHub Pages
   prefetch: true,
-  site: SITE_METADATA.siteUrl,
   image: {
     service: passthroughImageService(),
   },
