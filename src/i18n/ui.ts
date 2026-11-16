@@ -3,9 +3,9 @@ export const defaultLang = 'en' as const;
 export const ui = {
   'en': {
     // Site Metadata
-    'siteMetadata.title': 'Astro Starter Blog',
-    'siteMetadata.headerTitle': 'Astro Starter Blog',   
-    'siteMetadata.description': 'A blog created with Astro and Tailwind.css',
+    'siteMetadata.title': 'UnderHood Blog',
+    'siteMetadata.headerTitle': 'UnderHood Blog',   
+    'siteMetadata.description': 'Underhood - Trying to go beyond the surface ',
     'siteMetadata.language': 'en-US',
 
     // Pages
@@ -45,9 +45,12 @@ export const ui = {
     // Navigation
     'nav.home': 'Home',
     'nav.blog': 'Blog',
-    'nav.projects': 'Projects',
+  //'nav.projects': 'Projects',
     'nav.tags': 'Tags',
     'nav.about': 'About',
+
+   
+
 
     // Layouts
     'layouts.authorLayout.aboutAuthor': 'About {author}',
@@ -57,7 +60,6 @@ export const ui = {
     'layouts.postLayout.publishedAt': 'Published at',
     'layouts.postLayout.authors': 'Authors',
     'layouts.postLayout.authorName': 'Name',
-    'layouts.postLayout.authorTwitter': 'Twitter',
     'layouts.postLayout.draftMessage': 'This is a draft. It might be incomplete or have errors.',
     'layouts.postLayout.tableOfContents': 'Table of Contents',
     'layouts.postLayout.tags': 'Tags',
