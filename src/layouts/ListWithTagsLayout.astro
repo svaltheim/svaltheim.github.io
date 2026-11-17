@@ -61,33 +61,39 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
         <div class="py-4 px-6">
           {
             isBlogPage ? (
-              <h3 class="text-primary-500 font-bold uppercase">
-                {t("layouts.listWithTagsLayout.allPosts")}
+              <h3 class="text-md uppercase font-mono tracking-wider text-pink-500 font-bold mb-4">
+                Classification
               </h3>
             ) : (
               <Link
                 href="/blog"
-                class="font-bold uppercase text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500"
+                class="block font-mono text-md uppercase tracking-wider font-bold text-gray-400 hover:text-pink-400 mb-4 transition-colors"
               >
-                {t("layouts.listWithTagsLayout.allPosts")}
+                Classification
               </Link>
             )
           }
-          <ul>
+          <ul class="space-y-2">
             {
               tags.map(({ id, data }) => (
-                <li class="my-3">
+                <li>
                   {isSamePath(`/tag/${id}`) ? (
-                    <h3 class="inline py-2 px-3 uppercase text-sm font-bold text-primary-500">
-                      {`${data.name} (${tagCount(id)})`}
-                    </h3>
+                    <div class="flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-mono bg-pink-950/40 border border-pink-500/50 text-pink-300 shadow-[0_0_12px_rgba(236,72,153,0.15)]">
+                      <span class="uppercase tracking-wide">{data.name}</span>
+                      <span class="px-2 py-0.5 text-xs rounded bg-pink-900/60 text-pink-200">
+                        {tagCount(id)}
+                      </span>
+                    </div>
                   ) : (
                     <Link
                       href={`/tags/${id}`}
-                      class="py-2 px-3 uppercase text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500"
+                      class="group flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-mono bg-slate-900/80 border border-slate-800 text-slate-300 hover:border-pink-500 hover:text-pink-400 hover:shadow-[0_0_12px_rgba(236,72,153,0.15)] transition-all duration-200"
                       aria-label={`View posts tagged ${data.name}`}
                     >
-                      {`${data.name} (${tagCount(id)})`}
+                      <span class="uppercase tracking-wide">{data.name}</span>
+                      <span class="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 group-hover:bg-pink-950 group-hover:text-pink-300 transition-colors">
+                        {tagCount(id)}
+                      </span>
                     </Link>
                   )}
                 </li>
