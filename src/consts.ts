@@ -39,17 +39,18 @@ export const SITE_METADATA = {
     // Enable discussions in your repository settings and install the Giscus app
     provider: 'giscus', // Set to 'giscus' to enable comments or null to disable
     giscusConfig: {
-      repo: 'wanoo21/tailwind-astro-starting-blog', // Your GitHub repository (e.g., 'username/repo')
-      repositoryId: 'R_kgDOKSBMHw', // Your repository ID from giscus.app
-      category: 'General', // Discussion category (e.g., 'General')
-      categoryId: 'DIC_kwDOKSBMH84CZOdK', // Category ID from giscus.app
-      mapping: 'title', // How to map pages to discussions: 'pathname', 'url', 'title', etc.
+      repo: 'svaltheim/svaltheim.github.io', // Your GitHub repository (e.g., 'username/repo')
+      repositoryId: 'R_kgDOVLjJEg', // Your repository ID from giscus.app
+      category: 'Announcements', // Discussion category (e.g., 'General')
+      categoryId: 'DIC_kwDOVLjJEs4DLTVZ', // Category ID from giscus.app
+      mapping: 'pathname', // How to map pages to discussions: 'pathname', 'url', 'title', etc.
+      srict: '0',
       reactionsEnabled: '1', // Enable reactions: '1' or '0'
       emitMetadata: '0', // Emit discussion metadata: '1' or '0'
-      inputPosition: 'top', // Comment box position: 'top' or 'bottom'
+      inputPosition: 'bottom', // Comment box position: 'top' or 'bottom'
       theme: 'preferred_color_scheme', // Theme for light mode: 'light', 'dark', 'dark_dimmed', 'dark_high_contrast', 'transparent_dark', 'preferred_color_scheme', or custom CSS URL
       darkTheme: 'dark', // Theme for dark mode: same options as theme
-      lang: 'en', // Language code
+      lang: 'es', // Language code
       loading: 'lazy', // Loading mode: 'lazy' or 'eager'
     },
   },
