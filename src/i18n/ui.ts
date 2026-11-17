@@ -55,7 +55,7 @@ export const ui = {
     // Layouts
     'layouts.authorLayout.aboutAuthor': 'About {author}',
     'layouts.authorLayout.latestPosts': 'Latest author posts',
-    'layouts.listWithTagsLayout.allPosts': 'All posts',
+    'layouts.listWithTagsLayout.allPosts': 'Classification',
     'layouts.listWithTagsLayout.publishedAt': 'Published at',
     'layouts.postLayout.publishedAt': 'Published at',
     'layouts.postLayout.authors': 'Authors',
