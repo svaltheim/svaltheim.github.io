@@ -30,9 +30,9 @@ The first thing we'll do is open the binary in DIE to get an initial overview of
 
 ![](attachment/a57795191b916249b4f33936b70c2284.png)
 
-At first glance, DIE identifies the binary as being written and compiled with Visual C++.However, as we will see later, there are some clues that suggest otherwise. 
+At first glance, DIE identifies the binary as being written and compiled with Visual C++. However, as we will see later, there are some clues that suggest otherwise. 
 
-However, as I mentioned earlier, we cannot always rely on what DIE reports. Sometimes binary signatures can be misleading, and what a tool identifies as one thing may turn out to be something else entirely.
+As I mentioned earlier, we cannot always rely on what DIE reports. Sometimes binary signatures can be misleading, and what a tool identifies as one thing may turn out to be something else entirely.
 
 With that out of the way, it's time to move on to the actual analysis and start examining the binary statically.
 
@@ -119,7 +119,7 @@ To do this, I first navigated to the address **unk_1400CE050** in IDA and opened
 
 ![](attachment/8c67160357eebd09076b0dc8027079c6.png)
 
-Since the validation formula is relatively simple, we don't need to brute-force the key, I copied the first 28 bytes from the table, we can reverse the operations directly and recover each character using the corresponding byte from the comparison table.
+Since the validation formula is relatively simple, we don't need to brute-force the key. After copying the first 28 bytes from the table, we can reverse the operations directly and recover each character.
 
 ```
 expected_bytes = [
@@ -140,7 +140,7 @@ print("Flag found:", flag)
 
 ![](attachment/cb1f51537c6bcad59682854118e3531a.png)
 
-We enter the flag obtained
+We enter the flag recovered.
 
 ![](attachment/0bb57b346812adad0755a65083f1442d.png)
 
