@@ -12,6 +12,8 @@ import figureExample from "@/assets/black.png"
 
 Hello!
 
+## The Challenge
+
 As I mentioned in my previous article, I have decided to get back into _reverse engineering_ after spending several years away from it. To kick off this new chapter, I have chosen a relatively simple challenge that will allow us to put some basic static analysis concepts into practice.
 
 The binary comes from **crackmes.one(https://crackmes.one)**, a platform that hosts challenges designed to help people practice reverse engineering. In this case, we will be looking at **Hidden Flag**, created by _micky2331_.
@@ -24,6 +26,9 @@ The goal is to analyze the executable and uncover the hidden password that the p
 
 ![](attachment/2ff59d8a262df107ce7f4ad9093211ab.png)
 
+
+## A First Look At The Binary
+
 The analysis will be carried out using IDA, although the same process can be followed with other tools such as Ghidra, Binary Ninja, and so on.
 
 The first thing we'll do is open the binary in DIE to get an initial overview of what we're dealing with.
@@ -32,9 +37,7 @@ The first thing we'll do is open the binary in DIE to get an initial overview of
 
 At first glance, DIE identifies the binary as being written and compiled with Visual C++. However, as we will see later, there are some clues that suggest otherwise. 
 
-As I mentioned earlier, we cannot always rely on what DIE reports. Sometimes binary signatures can be misleading, and what a tool identifies as one thing may turn out to be something else entirely.
-
-With that out of the way, it's time to move on to the actual analysis and start examining the binary statically.
+Now, let's open the binary in IDA for the first time and see what await us.
 
 ![](attachment/36c8668eb5e69cef425f7150084382da.png)
 
@@ -46,6 +49,9 @@ We are not going to examine this code in detail because it does not contribute t
 
 Since the binary is not obfuscated and there are no additional protections preventing us from reaching the author's code, the quickest approach for this challenge is to start by looking for interesting strings.
 
+
+## Looking For Hints
+
 This has always been part of my usual workflow: once I open a binary, one of the first things I do is look for strings that might give me some clues about what the program does and where its main functionality might be located. Before diving into anything more complex, this is often a good starting point. If the strings are readable and haven't been obfuscated, they can provide quite a lot of useful information.
 
 In the screenshot below, we can see some of the most relevant strings found in the binary. Among them are the banner displayed when the program starts, along with the messages "Correct" and "Wrong", which tell us whether the input was accepted or rejected.
@@ -54,13 +60,17 @@ There is another detail worth mentioning. As you can see in the strings, the bin
 
 However, we should not draw a definitive conclusion about the compiler based on this single clue alone. We would need to examine additional information to confirm it.
 
-Although this detail is not relevant to solving the challenge itself, it illustrates something worth keeping in mind: automated analysis tools do not always provide completely accurate information. We should review their findings and treat them as useful indicators rather than unquestionable facts.
+Although this detail is not relevant to solving the challenge itself, it illustrates something worth keeping in mind. As we saw earlier, DIE identified the binary as compiled with Visual C++, but the strings point to the MinGW/GCC toolchain instead. This shows that we cannot always trust the results of automated tools: it is necessary to verify them manually to confirm whether they are correct or need adjusting.
 
 ![](attachment/4ffdb9f91f2005ccf772e9071e7f78b3.png)
 
 This takes us to the **.rdata section**, which normally contains read-only data such as strings and constants used by the program.
 
 ![](attachment/90e41fef8c9d4fd9898cb653074c75c4.png)
+
+
+
+## Finding The Main Function
 
 By following the string references, we eventually reach the **main** function. Here, we can see the challenge banner. Essentially, this block checks whether the input operation has failed (for example, if the end of the input stream has been reached). It then waits for us to enter the key before proceeding to the end of the **main** function, at **loc_1400018D4**.
 
@@ -78,12 +88,16 @@ At a high level, the code below shows the reference to the "Read" string, follow
 ![](attachment/1b453d3aff400aa479ca31203541ded8.png)
 
 
-Now we're going to examine the heart of the challenge: the **sub_140001760** function. This is where the key we entered earlier is validated. The function first checks its length and then determines whether it is the correct key by performing a series of operations that we will examine in detail below.
+## The Validation Routine
+
+The image above give an overview of the loop, which we will now break down step by step.
+
+Now, we're going to examine the heart of the challenge: the **sub_140001760** function. This is where the key we entered earlier is validated. The function first checks its length and then determines whether it is the correct key by performing a series of operations that we will examine in detail below.
 
 ![](attachment/246b30ff0138210912d5c415dfc5c811.png)
 
 
-Here, the function receives the key we entered earlier and uses `cmp rax, 1Ch` to check whether its length is exactly 28 characters.
+Here, the function receives the key we entered earlier and uses **cmp rax, 1Ch** to check whether its length is exactly 28 characters.
 
 Next, `setnz al` sets **AL** to `1` if the length does not match, or to `0` if it does. The `test al, al` instruction then checks the value stored in **AL**. If it is zero, the `jz` instruction jumps to the loop initialisation, meaning the input has the correct length. Otherwise, the input is rejected, and the function returns `0`.
 
@@ -94,12 +108,25 @@ This check prevents the program from entering the loop when the input length is 
 ![](attachment/48e2188b043b5bbbb548da20405ec238.png)
 <p style="text-align:center;">Overview of the Loop </p>
 
-Now, assuming the key is exactly 28 characters long, the function proceeds to the next step: entering the loop, where a series of calculations are performed. This loop starts at **loc_140001794**.
+
+
+## The Loop, Where The Magic Happens
+
+Assuming the key is exactly 28 characters long, the function proceeds to the next step: entering the loop, where a series of calculations are performed. This loop starts at **loc_140001794**.
 
 
 ![](attachment/76c966a09746d1ec5e83f6543464d5a4.png)
 
-The most notable part here is the loc_140001794 block, where each letter we have entered goes through a formula. Broadly speaking, we have that var_8 is the index of the loop and we see that both **ecx** and **eax** receive the index, then we do an **add eax,eax** which is equivalent to multiplying by 2 and then we have **add eax,ecx** which adds the index again so we have 3 times the index and finally, **add eax, edx** adds the value stored in **EDX**, which contains the result of **XORing** the current character with **0x5A**.
+The most notable part here is the loc_140001794 block, where each letter we have entered goes through a formula. 
+
+- **var_8** is the loop index.
+- **ecx and eax** both receive the index.
+- **add eax, eax** doubles it, and add eax, ecx adds it once more (3 × index).
+- **add eax, edx** adds the current character XORed with 0x5A.
+
+
+
+## The Formula
 
 Summarizing what was explained above translates into this:
 
@@ -113,6 +140,11 @@ The result is then compared with the corresponding byte in the table shown in th
 ![](attachment/45b0e85724ff15482ec0a582a05cd0df.png)
 
 
+
+
+## Recovering The Flag With Python
+
+
 Now that we have figured out how the operations work and identified the table used to compare our input, the quickest way to extract the key is to write a small Python script.
 
 To do this, I first navigated to the address **unk_1400CE050** in IDA and opened the Hex View window.
@@ -121,7 +153,7 @@ To do this, I first navigated to the address **unk_1400CE050** in IDA and opened
 
 Since the validation formula is relatively simple, we don't need to brute-force the key. After copying the first 28 bytes from the table, we can reverse the operations directly and recover each character.
 
-```
+```python
 expected_bytes = [
     0x19, 0x1A, 0x1B, 0x2A, 0x0E, 0x7B, 0x80, 0x1A, 
     0x1A, 0x85, 0x26, 0x26, 0x8F, 0x50, 0x2F, 0x48, 
@@ -143,6 +175,9 @@ print("Flag found:", flag)
 We enter the flag recovered.
 
 ![](attachment/0bb57b346812adad0755a65083f1442d.png)
+
+
+## Conclusion
 
 This challenge was a good opportunity to revisit some basic static analysis techniques. We started by examining the binary's strings, followed their references to locate the validation routine, and finally reconstructed the algorithm used to verify the input.
 
