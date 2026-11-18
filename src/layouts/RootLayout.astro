@@ -27,7 +27,7 @@ type Props = {
 
 <html lang={t("siteMetadata.language")} class="scroll-smooth">
   <BaseHead {...Astro.props} />
-  <body
+  <body    
     class="bg-white text-black antialiased dark:bg-gray-950 dark:text-white"
   >
     <SectionContainer>
@@ -39,5 +39,13 @@ type Props = {
         <Footer />
       </div>
     </SectionContainer>
+
+    <!-- Cloudflare Web Analytics -->
+    <script 
+     type='module' 
+     src='https://static.cloudflareinsights.com/beacon.min.js' 
+     data-cf-beacon='{"token": "beba4c8383814442a6f6f19aee23ae13"}'
+    ></script>
+    <!-- End Cloudflare Web Analytics --> 
   </body>
 </html>
